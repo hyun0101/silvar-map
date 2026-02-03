@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<title>해커스 전국 폐교재 수거 랭킹</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: "Pretendard", sans-serif;
+  background: #f2f7f2;
+  text-align: center;
+}
+
+h1 { margin: 20px 0 5px; }
+p { margin-bottom: 20px; color: #555; }
+
+/* 지도 영역 */
+.map-container {
+  position: relative;
+  width: 900px;
+  margin: 0 auto 40px;
+}
+
+.map-image {
+  width: 100%;
+  display: block;
+}
+
+/* 지점 공통 스타일 */
+.branch {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.branch:hover {
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+.label {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.amount {
+  font-size: 12px;
+  color: #2e7d32;
+}
+
+.crown {
+  font-size: 22px;
+  animation: float 2s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0); }
+}
+</style>
+</head>
+
+<body>
+
+<h1>🏆 해커스 전국 폐교재 수거 랭킹</h1>
+<p>전국 지점이 모은 폐교재를 나무로 표현했어요 🌲</p>
+
+<div class="map-container">
+  <!-- 지도 이미지 -->
+  <img src="korea-map.png" class="map-image">
+
+  <!-- 지점들이 JS로 들어올 자리 -->
+  <div id="branches-layer"></div>
+</div>
+
+<script>
+// ✅ 지점 데이터 (위치는 % 단위)
+const branches = [
+  { name: "서울 강남", top: 48, left: 54, amount: 420 },
+  { name: "서울 종로", top: 45, left: 52, amount: 380 },
+  { name: "부산", top: 82, left: 67, amount: 990 },
+  { name: "대구", top: 68, left: 63, amount: 310 },
+  { name: "인천", top: 50, left: 44, amount: 260 },
+  { name: "대전", top: 61, left: 54, amount: 300 },
+  { name: "광주", top: 76, left: 38, amount: 330 }
+];
+
+// 1등 지점 찾기
+const topAmount = Math.max(...branches.map(b => b.amount));
+
+const layer = document.getElementById("branches-layer");
+
+branches.forEach(b => {
+  const scale = 20 + (b.amount / topAmount) * 30; // 나무 크기 비례
+  const isTop = b.amount === topAmount;
+
+  const div = document.createElement("div");
+  div.className = "branch";
+  div.style.top = b.top + "%";
+  div.style.left = b.left + "%";
+
+  div.innerHTML = `
+    ${isTop ? `<div class="crown">👑</div>` : ""}
+    <div style="font-size:${scale}px">🌲</div>
+    <div style="font-size:${scale/1.8}px">📚</div>
+    <div class="label">${b.name}</div>
+    <div class="amount">${b.amount}kg</div>
+  `;
+
+  layer.appendChild(div);
+});
+</script>
+
+</body>
+</html>
